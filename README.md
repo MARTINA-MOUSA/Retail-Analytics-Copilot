@@ -58,10 +58,20 @@ python -c "import urllib.request; urllib.request.urlretrieve('https://raw.github
 3. **Install and setup Ollama**:
 ```bash
 # Install from https://ollama.com
+# Then pull the model:
 ollama pull phi3.5:3.8b-mini-instruct-q4_K_M
+# Verify installation:
+ollama list
 ```
 
-4. **Run the agent**:
+See [SETUP_OLLAMA.md](SETUP_OLLAMA.md) for detailed setup instructions.
+
+4. **Test Ollama connection** (optional):
+```bash
+python test_ollama.py
+```
+
+5. **Run the agent**:
 ```bash
 python run_agent_hybrid.py --batch sample_questions_hybrid_eval.jsonl --out outputs_hybrid.jsonl
 ```

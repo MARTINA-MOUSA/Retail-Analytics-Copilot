@@ -50,11 +50,12 @@ def optimize_nl_to_sql():
     """Optimize the NL→SQL module."""
     print("Setting up LLM...")
     try:
-        lm = dspy.LM(model="ollama/phi3.5:3.8b-mini-instruct-q4_K_M", api_base="http://localhost:11434")
+        lm = dspy.LM(model="ollama/phi3.5", api_base="http://localhost:11434")
         dspy.configure(lm=lm)
     except Exception as e:
         print(f"Error: {e}")
-        print("Make sure Ollama is running!")
+        print("Make sure Ollama is running and phi3.5 model is installed!")
+        print("Run: ollama pull phi3.5:3.8b-mini-instruct-q4_K_M")
         return
     
     print("Creating training set...")

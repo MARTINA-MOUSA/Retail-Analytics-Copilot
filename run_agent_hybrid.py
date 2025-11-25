@@ -16,15 +16,21 @@ console = Console()
 def setup_llm():
     """Setup DSPy LM with Ollama."""
     try:
-        # Try Ollama first
-        lm = dspy.LM(model="ollama/phi3.5:3.8b-mini-instruct-q4_K_M", api_base="http://localhost:11434")
+        # Try Ollama with phi3.5 model
+        # When you pull: ollama pull phi3.5:3.8b-mini-instruct-q4_K_M
+        # The model name in DSPy should be just "phi3.5" or "ollama/phi3.5"
+        lm = dspy.LM(model="ollama/phi3.5", api_base="http://localhost:11434")
         # Test connection
+        console.print("[cyan]Testing Ollama connection...[/cyan]")
         test_response = lm("test", max_tokens=1)
+        console.print("[green]✓ Ollama connection successful[/green]")
         return lm
     except Exception as e:
         console.print(f"[red]Error connecting to Ollama: {e}[/red]")
         console.print("[yellow]Make sure Ollama is running and phi3.5 model is installed:[/yellow]")
-        console.print("[yellow]  ollama pull phi3.5:3.8b-mini-instruct-q4_K_M[/yellow]")
+        console.print("[yellow]  1. Install Ollama from https://ollama.com[/yellow]")
+        console.print("[yellow]  2. Run: ollama pull phi3.5:3.8b-mini-instruct-q4_K_M[/yellow]")
+        console.print("[yellow]  3. Verify: ollama list (should show phi3.5)[/yellow]")
         sys.exit(1)
 
 
