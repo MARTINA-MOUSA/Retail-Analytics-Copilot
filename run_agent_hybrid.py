@@ -50,6 +50,21 @@ def main(batch: str, out: str):
     if not db_path.exists():
         console.print(f"[red]Database not found: {db_path}[/red]")
         console.print("[yellow]Please download the Northwind database first.[/yellow]")
+        console.print("[yellow]Run: python setup_db.py[/yellow]")
+        sys.exit(1)
+    
+    # Verify database is valid
+    try:
+        import sqlite3
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' LIMIT 1;")
+        cursor.fetchone()
+        conn.close()
+    except Exception as e:
+        console.print(f"[red]Database is corrupted: {e}[/red]")
+        console.print("[yellow]Please re-download the database:[/yellow]")
+        console.print("[yellow]  python setup_db.py --force[/yellow]")
         sys.exit(1)
     
     # Setup LLM

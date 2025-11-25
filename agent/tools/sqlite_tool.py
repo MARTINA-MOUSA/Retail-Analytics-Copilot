@@ -15,23 +15,37 @@ class SQLiteTool:
     
     def _ensure_lowercase_views(self):
         """Create lowercase compatibility views if they don't exist."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
-        views = [
-            ("orders", "Orders"),
-            ("order_items", '"Order Details"'),
-            ("products", "Products"),
-            ("customers", "Customers"),
-        ]
-        
-        for view_name, table_name in views:
-            cursor.execute(
-                f"CREATE VIEW IF NOT EXISTS {view_name} AS SELECT * FROM {table_name};"
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Test if database is valid
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' LIMIT 1;")
+            cursor.fetchone()
+            
+            views = [
+                ("orders", "Orders"),
+                ("order_items", '"Order Details"'),
+                ("products", "Products"),
+                ("customers", "Customers"),
+            ]
+            
+            for view_name, table_name in views:
+                try:
+                    cursor.execute(
+                        f"CREATE VIEW IF NOT EXISTS {view_name} AS SELECT * FROM {table_name};"
+                    )
+                except sqlite3.OperationalError as e:
+                    # View might already exist or table doesn't exist, skip
+                    pass
+            
+            conn.commit()
+            conn.close()
+        except sqlite3.DatabaseError as e:
+            raise FileNotFoundError(
+                f"Database is corrupted or invalid: {e}. "
+                f"Please re-download it by running: python setup_db.py"
             )
-        
-        conn.commit()
-        conn.close()
     
     def get_schema(self) -> Dict[str, List[Dict[str, str]]]:
         """Get database schema information."""
@@ -47,7 +61,11 @@ class SQLiteTool:
         tables = [row[0] for row in cursor.fetchall()]
         
         for table in tables:
-            cursor.execute(f"PRAGMA table_info({table})")
+            # Quote table name to handle spaces and special characters
+            # SQLite requires double quotes for identifiers with spaces
+            # Always quote to be safe
+            quoted_table = f'"{table}"'
+            cursor.execute(f"PRAGMA table_info({quoted_table})")
             columns = cursor.fetchall()
             schema[table] = [
                 {
