@@ -47,7 +47,8 @@ class HybridAgent:
         else:
             # Try to setup default LM with Ollama
             try:
-                lm = dspy.LM(model="ollama/phi3.5", api_base="http://localhost:11434")
+                # Use full model name that matches what was pulled
+                lm = dspy.LM(model="ollama/phi3.5:3.8b-mini-instruct-q4_K_M", api_base="http://localhost:11434")
                 dspy.configure(lm=lm)
             except:
                 pass

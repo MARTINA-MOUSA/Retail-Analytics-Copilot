@@ -18,7 +18,7 @@ class NLToSQLSignature(dspy.Signature):
     """Generate SQL query from natural language question."""
     
     question = dspy.InputField(desc="The user's question")
-    schema = dspy.InputField(desc="Database schema information")
+    db_schema = dspy.InputField(desc="Database schema information")
     context = dspy.InputField(desc="Relevant context from documents (dates, KPIs, etc.)")
     sql_query = dspy.OutputField(desc="Valid SQLite query")
 
@@ -65,7 +65,7 @@ class NLToSQL(dspy.Module):
     def forward(self, question: str, schema: str, context: str = "") -> str:
         result = self.generate(
             question=question,
-            schema=schema,
+            db_schema=schema,
             context=context or "No additional context."
         )
         
