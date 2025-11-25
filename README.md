@@ -39,12 +39,25 @@ The optimization used a small training set of 20 handcrafted examples covering v
 
 ## Setup
 
-1. **Install dependencies**:
+**Important**: Follow these steps in order!
+
+1. **Create virtual environment**:
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+2. **Install dependencies**:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. **Download Northwind database**:
+3. **Download Northwind database**:
 ```bash
 python setup_db.py
 ```
@@ -55,7 +68,7 @@ mkdir -p data
 python -c "import urllib.request; urllib.request.urlretrieve('https://raw.githubusercontent.com/jpwhite3/northwind-SQLite3/main/dist/northwind.db', 'data/northwind.sqlite')"
 ```
 
-3. **Install and setup Ollama**:
+4. **Install and setup Ollama**:
 ```bash
 # Install from https://ollama.com
 # Then pull the model:
@@ -64,17 +77,12 @@ ollama pull phi3.5:3.8b-mini-instruct-q4_K_M
 ollama list
 ```
 
-See [SETUP_OLLAMA.md](SETUP_OLLAMA.md) for detailed setup instructions.
-
-4. **Test Ollama connection** (optional):
-```bash
-python test_ollama.py
-```
-
 5. **Run the agent**:
 ```bash
 python run_agent_hybrid.py --batch sample_questions_hybrid_eval.jsonl --out outputs_hybrid.jsonl
 ```
+
+See [SETUP.md](SETUP.md) for detailed setup instructions with troubleshooting.
 
 ## Trade-offs & Assumptions
 
